@@ -4,18 +4,17 @@ image: Visual Studio 2017
 pull_requests:
   do_not_increment_build_number: true
 
-init:
-- ps: '[System.IO.File]::AppendAllText("C:\Windows\System32\drivers\etc\hosts", "`n93.184.221.200  api.nuget.org")'
-  
+configuration: Release
+platform: Any CPU
+
 install:
 - cmd: >-
-    type c:\windows\system32\drivers\etc\hosts
-    
-    ping api.nuget.org
-    
     dotnet restore
+
 build:
   verbosity: minimal
+  publish_nuget: true
+  publish_nuget_symbols: true
 
 test_script:
 - ps: dotnet test --no-build OddJob.Tests/OddJob.Tests.csproj
