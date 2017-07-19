@@ -34,3 +34,7 @@ deploy:
     secure: zU+yoH7wuMiO8KnnAUtT6TEHibuHUhO6nczepmCvHmcvXox6IICFCx7AA4F9AK7o
   on:
     branch: master
+
+skip_commits:
+  files:
+    - README.md
