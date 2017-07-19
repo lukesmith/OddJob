@@ -17,4 +17,4 @@ build:
   publish_nuget_symbols: true
 
 test_script:
-- ps: dotnet test --no-build OddJob.Tests/OddJob.Tests.csproj
+- ps: dotnet test --configuration Release --no-build OddJob.Tests/OddJob.Tests.csproj
