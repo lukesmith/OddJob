@@ -24,7 +24,8 @@ namespace OddJob
         {
             try
             {
-                Task.WaitAll(this.jobs.Select(t => RunJobAsync(t, cts)).ToArray());
+                Task.WaitAll(this.jobs.Select(job => RunJobAsync(job, cts)
+                    .ContinueWith(LogTaskCompletation, job)).ToArray());
 
                 await Task.CompletedTask;
             }
@@ -34,7 +35,26 @@ namespace OddJob
             }
         }
 
-        private async Task RunJobAsync(IJob job, CancellationTokenSource cts)
+        private void LogTaskCompletation(Task completedTask, object state)
+        {
+            var jobName = state.GetType().Name;
+
+            if (completedTask.IsCanceled)
+            {
+                this.logger.LogInformation($"{jobName} was cancelled");
+            }
+            else if (completedTask.IsFaulted)
+            {
+                this.logger.LogInformation(0, completedTask.Exception, $"{jobName} faulted with message '{completedTask.Exception.Message}'");
+                throw completedTask.Exception;
+            }
+            else
+            {
+                this.logger.LogInformation($"{jobName} has completed");
+            }
+        }
+
+        private static async Task RunJobAsync(IJob job, CancellationTokenSource cts)
         {
             try
             {
@@ -42,16 +62,10 @@ namespace OddJob
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation($"{job.GetType().Name} was cancelled");
                 throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                this.logger.LogInformation(
-                    0,
-                    ex,
-                    $"{job.GetType().Name} has halted with message '{ex.Message}'");
-
                 if (!cts.IsCancellationRequested)
                 {
                     cts.Cancel();

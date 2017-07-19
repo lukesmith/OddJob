@@ -32,7 +32,7 @@ namespace OddJob.Example
 
                 i++;
 
-                await Task.Delay(1000, cancellationToken);
+                await Task.Delay(5000, cancellationToken);
             }
         }
     }

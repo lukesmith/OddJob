@@ -1,10 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace OddJob.Example
 {
-    public class BackgroundJob : IJob
+    public class BackgroundJob : Jobs.Forever
     {
         private readonly ILoggerFactory loggerFactory;
 
@@ -13,18 +12,13 @@ namespace OddJob.Example
             this.loggerFactory = loggerFactory;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
+        protected override async Task DoAsync()
         {
             var logger = loggerFactory.CreateLogger<BackgroundJob>();
 
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            logger.LogInformation("tock");
 
-                logger.LogInformation("tock");
-
-                await Task.Delay(1000, cancellationToken);
-            }
+            await Task.Delay(1000);
         }
     }
 }

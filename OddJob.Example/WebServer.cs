@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +25,6 @@ namespace OddJob.Example
             var webHostBuilder = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
                 .UseConfiguration(this.configuration)
                 .UseLoggerFactory(this.loggerFactory)
                 .UseStartup<Startup>();
@@ -36,8 +34,6 @@ namespace OddJob.Example
                 host.Run(cancellationToken);
             }
 
-            this.loggerFactory.CreateLogger<WebServer>().LogInformation("WebServer stopped");
-
             await Task.CompletedTask;
         }
 
@@ -45,11 +41,6 @@ namespace OddJob.Example
         {
             public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
             {
-                if (env.IsDevelopment())
-                {
-                    app.UseDeveloperExceptionPage();
-                }
-
                 app.Run(async (context) =>
                 {
                     await context.Response.WriteAsync("Hello World!");
