@@ -25,7 +25,7 @@ test_script:
 - ps: dotnet test --configuration Release --no-build OddJob.Tests\OddJob.Tests.csproj
 
 artifacts:
-- path: bin\Release\**\*.nupkg
+- path: OddJob\bin\Release\*.nupkg
   name: NuGet
 
 deploy:
