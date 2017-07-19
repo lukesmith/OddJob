@@ -14,7 +14,7 @@ build_script:
 - ps: >-
     dotnet build --configuration Release /property:Version=$env:appveyor_build_version
 
-    dotnet pack --configuration Release --no-build OddJob\OddJob.csproj --include-symbols
+    dotnet pack --configuration Release /property:Version=$env:appveyor_build_version --no-build OddJob\OddJob.csproj --include-symbols
 
 build:
   verbosity: minimal
