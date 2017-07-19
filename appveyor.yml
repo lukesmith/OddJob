@@ -10,6 +10,12 @@ install:
 - cmd: >-
     dotnet restore
 
+build_script:
+- ps: >-
+    dotnet build --configuration Release /property:Version={version}
+
+    dotnet pack --configuration Release --no-build OddJob/OddJob.csproj --include-symbols
+
 build:
   verbosity: minimal
   publish_nuget: true
