@@ -14,7 +14,7 @@ build_script:
 - ps: >-
     dotnet build --configuration Release /property:Version=$env:appveyor_build_version
 
-    dotnet pack --configuration Release --no-build OddJob/OddJob.csproj --include-symbols
+    dotnet pack --configuration Release --no-build OddJob\OddJob.csproj --include-symbols
 
 build:
   verbosity: minimal
@@ -22,7 +22,11 @@ build:
   publish_nuget_symbols: true
 
 test_script:
-- ps: dotnet test --configuration Release --no-build OddJob.Tests/OddJob.Tests.csproj
+- ps: dotnet test --configuration Release --no-build OddJob.Tests\OddJob.Tests.csproj
+
+artifacts:
+- path: bin\Release\*.nupkg
+  name: NuGet
 
 deploy:
 - provider: NuGet
