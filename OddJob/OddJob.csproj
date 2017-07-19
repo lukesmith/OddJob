@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <Authors>Luke Smith</Authors>
+    <Copyright>Luke Smith</Copyright>
+    <PackageLicenseUrl>https://github.com/lukesmith/OddJob/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/lukesmith/OddJob</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:lukesmith/OddJob.git</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
