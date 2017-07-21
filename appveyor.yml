@@ -18,7 +18,6 @@ build_script:
     $version = "$major.$minor.$patch"
 
     dotnet build --configuration Release /property:Version=$version
-
     dotnet pack --configuration Release /property:Version=$version --no-build src\OddJob\OddJob.csproj --include-symbols
 
 build:
