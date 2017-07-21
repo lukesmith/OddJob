@@ -3,8 +3,17 @@ using System.Threading.Tasks;
 
 namespace OddJob
 {
+    /// <summary>
+    /// Defines the interface for a job.
+    /// </summary>
     public interface IJob
     {
-        Task RunAsync(CancellationToken token);
+        /// <summary>
+        /// Run the job until the <paramref name="cancellationToken"/> signals
+        /// to finish.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to 
+        /// signal to the job to cancel.</param>
+        Task RunAsync(CancellationToken cancellationToken);
     }
 }

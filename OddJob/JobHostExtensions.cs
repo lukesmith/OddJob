@@ -5,18 +5,30 @@ using System.Threading.Tasks;
 
 namespace OddJob
 {
+    /// <summary>
+    /// Extends <see cref="IJobHost"/> with extra functionality.
+    /// </summary>
     public static class JobHostExtensions
     {
-        public static void Run(this IJobHost runner)
+        /// <summary>
+        /// Runs the jobs.
+        /// </summary>
+        /// <param name="host">The host whose jobs should be run.</param>
+        public static void Run(this IJobHost host)
         {
-            runner.RunAsync().GetAwaiter().GetResult();
+            host.RunAsync().GetAwaiter().GetResult();
         }
 
-        public static async Task RunAsync(this IJobHost host, CancellationToken token = default(CancellationToken))
+        /// <summary>
+        /// Runs the jobs.
+        /// </summary>
+        /// <param name="host">The host whose jobs should be run.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use that will cancel the running jobs.</param>
+        public static async Task RunAsync(this IJobHost host, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (token.CanBeCanceled)
+            if (cancellationToken.CanBeCanceled)
             {
-                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(token))
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
                 {
                     await host.RunImplAsync(cts);
                 }

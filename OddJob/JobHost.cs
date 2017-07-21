@@ -7,19 +7,29 @@ using Microsoft.Extensions.Logging;
 
 namespace OddJob
 {
+    /// <summary>
+    /// Represents a <see cref="IJobHost"/>.
+    /// </summary>
     public class JobHost : IJobHost
     {
         private readonly IJob[] jobs;
         private readonly ILogger<JobHost> logger;
 
+        /// <summary>
+        /// Initializes a new <see cref="JobHost"/>.
+        /// </summary>
+        /// <param name="jobs">The jobs for the host to maintain.</param>
+        /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to log to.</param>
         public JobHost(IJob[] jobs, ILoggerFactory loggerFactory)
         {
             this.jobs = jobs;
             this.logger = loggerFactory.CreateLogger<JobHost>();
         }
 
+        /// <inheritdoc />
         public IEnumerable<IJob> Jobs => this.jobs;
 
+        /// <inheritdoc />
         public async Task StartAsync(CancellationTokenSource cts)
         {
             try
@@ -75,6 +85,7 @@ namespace OddJob
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
         }
