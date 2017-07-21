@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddJob", "OddJob\OddJob.csproj", "{979BEEB1-B5E1-4318-A3C2-44D8F33916A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddJob", "src\OddJob\OddJob.csproj", "{979BEEB1-B5E1-4318-A3C2-44D8F33916A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddJob.Example", "OddJob.Example\OddJob.Example.csproj", "{0E76E9A4-717A-4DC8-BF10-FFDFC5A850C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddJob.Example", "src\OddJob.Example\OddJob.Example.csproj", "{0E76E9A4-717A-4DC8-BF10-FFDFC5A850C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddJob.Tests", "OddJob.Tests\OddJob.Tests.csproj", "{43B5C647-1970-40C1-BDEF-8AC6392AEA31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddJob.Tests", "test\OddJob.Tests\OddJob.Tests.csproj", "{43B5C647-1970-40C1-BDEF-8AC6392AEA31}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35628DA9-5159-42E6-AB79-C9562E5EB59B}"
 	ProjectSection(SolutionItems) = preProject
