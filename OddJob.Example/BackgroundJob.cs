@@ -5,20 +5,23 @@ namespace OddJob.Example
 {
     public class BackgroundJob : Jobs.Forever
     {
-        private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger logger;
 
         public BackgroundJob(ILoggerFactory loggerFactory)
         {
-            this.loggerFactory = loggerFactory;
+            this.logger = loggerFactory.CreateLogger<BackgroundJob>();
         }
 
         protected override async Task DoAsync()
         {
-            var logger = loggerFactory.CreateLogger<BackgroundJob>();
-
-            logger.LogInformation("tock");
+            this.logger.LogInformation("tock");
 
             await Task.Delay(1000);
+        }
+
+        protected override void OnCancel()
+        {
+            this.logger.LogInformation("Cancelling job");
         }
     }
 }

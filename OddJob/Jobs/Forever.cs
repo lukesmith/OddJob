@@ -14,7 +14,11 @@ namespace OddJob.Jobs
         {
             while (true)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    this.OnCancel();
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
 
                 await DoAsync();
             }
@@ -25,5 +29,13 @@ namespace OddJob.Jobs
         /// </summary>
         /// <returns></returns>
         protected abstract Task DoAsync();
+
+        /// <summary>
+        /// Provides a method for the job to be notified 
+        /// just before the job will be cancelled.
+        /// </summary>
+        protected virtual void OnCancel()
+        {
+        }
     }
 }

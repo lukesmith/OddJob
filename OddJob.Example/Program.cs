@@ -18,7 +18,8 @@ namespace OddJob.Example
                     .Add(() => new OneTimeJob(loggerFactory))
                     .Add(() => new FailingBackgroundJob(loggerFactory))
                     .Add(() => new BackgroundJob(loggerFactory))
-                    .Add(() => new WebServer(configuration, loggerFactory));
+                    .Add(() => new WebServer(configuration, loggerFactory))
+                    .UseLoggerFactory(loggerFactory);
 
                 return builder.BuildAndRun();
             }
