@@ -12,6 +12,7 @@
 
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\.xml</DocumentationFile>
+    <Description>Provides a hosting mechanism for running multiple concurrent jobs. Failure in anyone job signals all over jobs to cancel.</Description>
   </PropertyGroup>
 
   <ItemGroup>
