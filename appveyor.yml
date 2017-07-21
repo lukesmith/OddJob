@@ -1,6 +1,9 @@
 ﻿version: '{build}'
 image: Visual Studio 2017
 
+environment:
+  version: 0.1.0
+
 pull_requests:
   do_not_increment_build_number: true
 
@@ -12,17 +15,9 @@ install:
 
 build_script:
 - ps: >-
-    $major = 0
+    dotnet build --configuration Release /property:Version=$env:version
 
-    $minor = 1
-
-    $patch = 0
-
-    $version = "$major.$minor.$patch"
-
-    dotnet build --configuration Release /property:Version=$version
-
-    dotnet pack --configuration Release /property:Version=$version --no-build src\OddJob\OddJob.csproj --include-symbols
+    dotnet pack --configuration Release /property:Version=$env:version --no-build src\OddJob\OddJob.csproj --include-symbols
 
 build:
   verbosity: minimal
@@ -40,6 +35,19 @@ deploy:
 - provider: NuGet
   api_key:
     secure: zU+yoH7wuMiO8KnnAUtT6TEHibuHUhO6nczepmCvHmcvXox6IICFCx7AA4F9AK7o
+  on:
+    branch: master
+    appveyor_repo_tag: true
+- provider: GitHub
+  release: v$env:version
+  description: >-
+    ## Where to get it
+    You can download this release from [nuget](https://www.nuget.org/packages/OddJob/)
+  auth_token:
+    secure: 2lxXAVjcYtHJ9YhRKD2u8rwZcUFNB0SaJaIgk5CMx+sYgDW61VDSM1mHkac2q3y+
+  artifact: /.*\.nupkg/
+  draft: false
+  prerelease: false
   on:
     branch: master
     appveyor_repo_tag: true
