@@ -1,4 +1,4 @@
-﻿version: 0.0.{build}
+﻿version: {build}
 image: Visual Studio 2017
 
 pull_requests:
@@ -12,9 +12,13 @@ install:
 
 build_script:
 - ps: >-
-    dotnet build --configuration Release /property:Version=$env:appveyor_build_version
+    $major = 0
+    $minor = 1
+    $patch = 0
+    $version = "$major.$minor.$patch"
 
-    dotnet pack --configuration Release /property:Version=$env:appveyor_build_version --no-build src\OddJob\OddJob.csproj --include-symbols
+    dotnet build --configuration Release /property:Version=$version
+    dotnet pack --configuration Release /property:Version=$version --no-build src\OddJob\OddJob.csproj --include-symbols
 
 build:
   verbosity: minimal
@@ -34,6 +38,7 @@ deploy:
     secure: zU+yoH7wuMiO8KnnAUtT6TEHibuHUhO6nczepmCvHmcvXox6IICFCx7AA4F9AK7o
   on:
     branch: master
+    appveyor_repo_tag: true
 
 skip_commits:
   files:
