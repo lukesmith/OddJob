@@ -18,6 +18,16 @@ namespace OddJob
         /// <summary>
         /// Initializes a new <see cref="JobHost"/>.
         /// </summary>
+        /// <param name="job">The job for the host to maintain.</param>
+        /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to log to.</param>
+        public JobHost(IJob job, ILoggerFactory loggerFactory)
+            : this(new [] { job }, loggerFactory)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="JobHost"/>.
+        /// </summary>
         /// <param name="jobs">The jobs for the host to maintain.</param>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to log to.</param>
         public JobHost(IJob[] jobs, ILoggerFactory loggerFactory)
@@ -88,6 +98,10 @@ namespace OddJob
         /// <inheritdoc />
         public void Dispose()
         {
+            foreach (var job in this.jobs)
+            {
+                (job as IDisposable)?.Dispose();
+            }
         }
     }
 }

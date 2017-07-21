@@ -17,8 +17,7 @@ namespace OddJob.Tests
 
             using (var loggerFactory = new LoggerFactory())
             {
-                var host = new JobHost(jobs, loggerFactory);
-
+                using (var host = new JobHost(jobs, loggerFactory))
                 using (var cts = new CancellationTokenSource())
                 {
                     var ex = await Assert.ThrowsAsync<AggregateException>(async () =>
@@ -41,8 +40,7 @@ namespace OddJob.Tests
 
             using (var loggerFactory = new LoggerFactory())
             {
-                var host = new JobHost(jobs, loggerFactory);
-
+                using (var host = new JobHost(jobs, loggerFactory))
                 using (var cts = new CancellationTokenSource())
                 {
                     var ex = await Assert.ThrowsAsync<AggregateException>(async () =>
@@ -65,8 +63,7 @@ namespace OddJob.Tests
 
             using (var loggerFactory = new LoggerFactory())
             {
-                var host = new JobHost(jobs, loggerFactory);
-
+                using (var host = new JobHost(jobs, loggerFactory))
                 using (var cts = new CancellationTokenSource())
                 {
                     var ex = await Assert.ThrowsAsync<AggregateException>(async () =>
@@ -78,6 +75,38 @@ namespace OddJob.Tests
                     Assert.True(cts.IsCancellationRequested,
                         "A job that fails should request a cancellation");
                 }
+            }
+        }
+
+        [Fact]
+        public async Task DisposesOfJobs()
+        {
+            var job = new DisposableJob();
+
+            using (var loggerFactory = new LoggerFactory())
+            {
+                using (var host = new JobHost(job, loggerFactory))
+                using (var cts = new CancellationTokenSource())
+                {
+                    await host.StartAsync(cts);
+                }
+            }
+
+            Assert.True(job.Disposed);
+        }
+
+        private sealed class DisposableJob : IJob, IDisposable
+        {
+            public bool Disposed { get; private set; }
+
+            public async Task RunAsync(CancellationToken cancellationToken)
+            {
+                await Task.CompletedTask;
+            }
+
+            public void Dispose()
+            {
+                this.Disposed = true;
             }
         }
 
