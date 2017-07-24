@@ -34,6 +34,7 @@ namespace OddJob.Tests
             protected override void OnCancel()
             {
                 this.OnCancelCalled = true;
+                base.OnCancel();
             }
         }
     }

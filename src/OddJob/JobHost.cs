@@ -39,6 +39,106 @@ namespace OddJob
         /// <inheritdoc />
         public IEnumerable<IJob> Jobs => this.jobs;
 
+        /// <summary>
+        /// Runs the <paramref name="job"/> to completion.
+        /// </summary>
+        /// <param name="job">The <see cref="IJob"/> to run.</param>
+        /// <returns>Returns <value>true</value> if the <paramref name="job"/> completed before being cancelled;
+        /// otherwise <value>false</value>.
+        /// </returns>
+        public static bool Run(IJob job)
+        {
+            return RunAsync(job).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Runs the <paramref name="job"/> to completion, or for the
+        /// duration specified by <paramref name="delayBeforeCancel"/>.
+        /// </summary>
+        /// <param name="job">The <see cref="IJob"/> to run.</param>
+        /// <param name="delayBeforeCancel">
+        /// A <see cref="TimeSpan"/> representing how long to wait for the <paramref name="job"/> to complete.
+        /// </param>
+        /// <returns>Returns <value>true</value> if the <paramref name="job"/> completed before being cancelled;
+        /// otherwise <value>false</value>.
+        /// </returns>
+        public static bool Run(IJob job, TimeSpan delayBeforeCancel)
+        {
+            return RunAsync(job, delayBeforeCancel).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Runs the <paramref name="job"/> to completion.
+        /// </summary>
+        /// <param name="job">The <see cref="IJob"/> to run.</param>
+        /// <param name="cancellationToken">
+        /// The <see cref="CancellationToken"/> that will be used to stop the run.
+        /// </param>
+        /// <returns>Returns <value>true</value> if the <paramref name="job"/> completed before being cancelled;
+        /// otherwise <value>false</value>.
+        /// </returns>
+        public static async Task<bool> RunAsync(IJob job, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = false;
+
+            var tasks = new[]
+            {
+                job.RunAsync(cancellationToken).ContinueWith(x => result = x.IsCompleted, cancellationToken),
+            };
+
+            await Task.WhenAny(tasks);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Runs the <paramref name="job"/> to completion, or for the
+        /// duration specified by <paramref name="delayBeforeCancel"/>.
+        /// </summary>
+        /// <param name="job">The <see cref="IJob"/> to run.</param>
+        /// <param name="delayBeforeCancel">
+        /// A <see cref="TimeSpan"/> representing how long to wait for the <paramref name="job"/> to complete.
+        /// </param>
+        /// <returns>Returns <value>true</value> if the <paramref name="job"/> completed before being cancelled;
+        /// otherwise <value>false</value>.
+        /// </returns>
+        public static async Task<bool> RunAsync(IJob job, TimeSpan delayBeforeCancel)
+        {
+            using (var cancellationSource = new CancellationTokenSource())
+            {
+                return await RunAsync(job, delayBeforeCancel, cancellationSource.Token);
+            }
+        }
+
+        /// <summary>
+        /// Runs the <paramref name="job"/> to completion, or for the
+        /// duration specified by <paramref name="delayBeforeCancel"/>.
+        /// </summary>
+        /// <param name="job">The <see cref="IJob"/> to run.</param>
+        /// <param name="delayBeforeCancel">
+        /// A <see cref="TimeSpan"/> representing how long to wait for the <paramref name="job"/> to complete.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The <see cref="CancellationToken"/> that will be used to stop the run.
+        /// </param>
+        /// <returns>Returns <value>true</value> if the <paramref name="job"/> completed before being cancelled;
+        /// otherwise <value>false</value>.
+        /// </returns>
+        public static async Task<bool> RunAsync(IJob job, TimeSpan delayBeforeCancel, CancellationToken cancellationToken)
+        {
+            var result = false;
+
+            var tasks = new[]
+            {
+                job.RunAsync(cancellationToken).ContinueWith(x => result = x.IsCompleted, cancellationToken),
+                Task.Delay(delayBeforeCancel, cancellationToken)
+            };
+
+            await Task.WhenAny(tasks);
+
+            return result;
+        }
+
         /// <inheritdoc />
         public async Task StartAsync(CancellationTokenSource cts)
         {

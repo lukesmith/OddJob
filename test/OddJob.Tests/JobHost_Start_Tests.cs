@@ -7,7 +7,7 @@ using Xunit;
 
 namespace OddJob.Tests
 {
-    public class JobHostTests
+    public class JobHost_Start_Tests
     {
         [Fact]
         public async Task StartingAJobThatInstantlyFails()
