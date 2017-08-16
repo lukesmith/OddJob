@@ -43,6 +43,7 @@ deploy:
   description: >-
     ## Where to get it
     You can download this release from [nuget](https://www.nuget.org/packages/OddJob/)
+    For a full list of changes refer to the [changelog](https://github.com/lukesmith/OddJob/blob/master/CHANGELOG.md#$env:version)
   auth_token:
     secure: 2lxXAVjcYtHJ9YhRKD2u8rwZcUFNB0SaJaIgk5CMx+sYgDW61VDSM1mHkac2q3y+
   artifact: /.*\.nupkg/
