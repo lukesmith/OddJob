@@ -28,6 +28,18 @@ namespace OddJob
         }
 
         /// <summary>
+        /// Add a <see cref="IJob"/> instance that will be managed by
+        /// a <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
+        /// </summary>
+        /// <param name="job">A <see cref="IJob"/>.</param>
+        /// <returns>A <see cref="JobHostBuilder"/>.</returns>
+        public JobHostBuilder Add(IJob job)
+        {
+            this.processes.Add(() => job);
+            return this;
+        }
+
+        /// <summary>
         /// Add a callback to create a <see cref="IJob"/> that will be managed by
         /// a <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
         /// </summary>
