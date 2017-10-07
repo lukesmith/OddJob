@@ -1,4 +1,3 @@
-﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -39,7 +38,7 @@ namespace OddJob.Tests
 
             var host = builder.Build();
 
-            Assert.Equal(1, host.Jobs.Count());
+            Assert.Single(host.Jobs);
         }
 
         private class TestJob : IJob
