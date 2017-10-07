@@ -1,10 +1,11 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace OddJob.Example
@@ -26,15 +27,18 @@ namespace OddJob.Example
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(this.configuration)
-                .UseLoggerFactory(this.loggerFactory)
+                .ConfigureServices(
+                    sb =>
+                    {
+                        sb.AddSingleton(this.loggerFactory);
+                    })
                 .UseStartup<Startup>();
 
             using (var host = webHostBuilder.Build())
             {
-                host.Run(cancellationToken);
+                await host.StartAsync(cancellationToken);
+                await host.WaitForShutdownAsync(cancellationToken);
             }
-
-            await Task.CompletedTask;
         }
 
         internal class Startup

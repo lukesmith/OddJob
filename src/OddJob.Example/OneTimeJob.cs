@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -17,7 +17,7 @@ namespace OddJob.Example
         {
             var logger = loggerFactory.CreateLogger<OneTimeJob>();
 
-            logger.LogInformation("Tshats it");
+            logger.LogInformation("Thats it");
 
             await Task.CompletedTask;
         }
