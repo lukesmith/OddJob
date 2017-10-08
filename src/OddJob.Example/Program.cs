@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace OddJob.Example
 {
-    class Program
+    public class Program
     {
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .Build();

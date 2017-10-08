@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +26,8 @@ namespace OddJob.Tests
                     });
 
                     Assert.Equal(tracerId, ex.Flatten().InnerExceptions.Single(x => x is TestException).Message);
-                    Assert.True(cts.IsCancellationRequested,
+                    Assert.True(
+                        cts.IsCancellationRequested,
                         "A job that fails to start instantly should request a cancellation");
                 }
             }
@@ -49,7 +50,8 @@ namespace OddJob.Tests
                     });
 
                     Assert.Equal(tracerId, ex.Flatten().InnerExceptions.Single(x => x is TestException).Message);
-                    Assert.True(cts.IsCancellationRequested,
+                    Assert.True(
+                        cts.IsCancellationRequested,
                         "A job that fails after a delay should request a cancellation");
                 }
             }
@@ -72,8 +74,7 @@ namespace OddJob.Tests
                     });
 
                     Assert.Equal(tracerId, ex.Flatten().InnerExceptions.Single(x => x is TestException).Message);
-                    Assert.True(cts.IsCancellationRequested,
-                        "A job that fails should request a cancellation");
+                    Assert.True(cts.IsCancellationRequested, "A job that fails should request a cancellation");
                 }
             }
         }
@@ -153,17 +154,19 @@ namespace OddJob.Tests
             }
         }
 
-        public class TestException : Exception
+        private sealed class TestException : Exception
         {
             public TestException()
             {
             }
 
-            public TestException(string message) : base(message)
+            public TestException(string message)
+                : base(message)
             {
             }
 
-            public TestException(string message, Exception inner) : base(message, inner)
+            public TestException(string message, Exception inner)
+                : base(message, inner)
             {
             }
         }

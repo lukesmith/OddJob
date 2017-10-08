@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddJob", "src\OddJob\OddJob.csproj", "{979BEEB1-B5E1-4318-A3C2-44D8F33916A0}"
 EndProject
@@ -14,6 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		CHANGELOG.md = CHANGELOG.md
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".stylecop", ".stylecop", "{B7FEFBC2-E048-4A58-A316-D0F9F5F377F5}"
+	ProjectSection(SolutionItems) = preProject
+		.stylecop\OddJob.ruleset = .stylecop\OddJob.ruleset
 	EndProjectSection
 EndProject
 Global
@@ -37,5 +42,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A40A7FA-D93E-4BD0-88AC-6C194FC7EB1D}
 	EndGlobalSection
 EndGlobal

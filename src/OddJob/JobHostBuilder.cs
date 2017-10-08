@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -18,7 +18,7 @@ namespace OddJob
         /// Creates an instance of <typeparamref name="T"/> that will be managed
         /// by the <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">An <see cref="IJob"/> to add to the built <see cref="JobHost"/>.</typeparam>
         /// <returns>A <see cref="JobHostBuilder"/>.</returns>
         public JobHostBuilder Add<T>()
             where T : IJob, new()
@@ -52,10 +52,10 @@ namespace OddJob
         }
 
         /// <summary>
-        /// 
+        /// Defines the <see cref="ILoggerFactory"/> to use when building.
         /// </summary>
-        /// <param name="loggerFactory"></param>
-        /// <returns></returns>
+        /// <param name="loggerFactory">An <see cref="ILoggerFactory"/>.</param>
+        /// <returns>A <see cref="JobHostBuilder"/>.</returns>
         public JobHostBuilder UseLoggerFactory(ILoggerFactory loggerFactory)
         {
             this.loggerFactory = loggerFactory;
@@ -65,7 +65,7 @@ namespace OddJob
         /// <summary>
         /// Builds a <see cref="IJobHost"/> based on the build configuration.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="JobHostBuilder"/>.</returns>
         public IJobHost Build()
         {
             return new JobHost(this.processes.Select(x => x()).ToArray(), this.loggerFactory ?? new NullLoggerFactory());

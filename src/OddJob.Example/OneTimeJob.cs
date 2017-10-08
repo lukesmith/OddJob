@@ -15,7 +15,7 @@ namespace OddJob.Example
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            var logger = loggerFactory.CreateLogger<OneTimeJob>();
+            var logger = this.loggerFactory.CreateLogger<OneTimeJob>();
 
             logger.LogInformation("Thats it");
 

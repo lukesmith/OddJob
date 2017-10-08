@@ -27,7 +27,7 @@ namespace OddJob.Tests
 
             var host = builder.Build();
 
-            Assert.Equal(new [] { job }, host.Jobs);
+            Assert.Equal(new[] { job }, host.Jobs);
         }
 
         [Fact]

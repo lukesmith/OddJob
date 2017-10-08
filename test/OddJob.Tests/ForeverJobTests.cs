@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -24,7 +24,7 @@ namespace OddJob.Tests
 
         private class FakeForever : Jobs.Forever
         {
-            public bool OnCancelCalled;
+            public bool OnCancelCalled { get; private set; }
 
             protected override async Task DoAsync()
             {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,17 +16,17 @@ namespace OddJob
         private readonly ILogger<JobHost> logger;
 
         /// <summary>
-        /// Initializes a new <see cref="JobHost"/>.
+        /// Initializes a new instance of the <see cref="JobHost"/> class.
         /// </summary>
         /// <param name="job">The job for the host to maintain.</param>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to log to.</param>
         public JobHost(IJob job, ILoggerFactory loggerFactory)
-            : this(new [] { job }, loggerFactory)
+            : this(new[] { job }, loggerFactory)
         {
         }
 
         /// <summary>
-        /// Initializes a new <see cref="JobHost"/>.
+        /// Initializes a new instance of the <see cref="JobHost"/> class.
         /// </summary>
         /// <param name="jobs">The jobs for the host to maintain.</param>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to log to.</param>
@@ -131,7 +131,7 @@ namespace OddJob
             var tasks = new[]
             {
                 job.RunAsync(cancellationToken).ContinueWith(x => result = x.IsCompleted, cancellationToken),
-                Task.Delay(delayBeforeCancel, cancellationToken)
+                Task.Delay(delayBeforeCancel, cancellationToken),
             };
 
             await Task.WhenAny(tasks);
@@ -145,7 +145,7 @@ namespace OddJob
             try
             {
                 Task.WaitAll(this.jobs.Select(job => RunJobAsync(job, cts)
-                    .ContinueWith(LogTaskCompletation, job)).ToArray());
+                    .ContinueWith(this.LogTaskCompletation, job)).ToArray());
 
                 await Task.CompletedTask;
             }
@@ -155,22 +155,12 @@ namespace OddJob
             }
         }
 
-        private void LogTaskCompletation(Task completedTask, object state)
+        /// <inheritdoc />
+        public void Dispose()
         {
-            var jobName = state.GetType().Name;
-
-            if (completedTask.IsCanceled)
+            foreach (var job in this.jobs)
             {
-                this.logger.LogInformation($"{jobName} was cancelled");
-            }
-            else if (completedTask.IsFaulted)
-            {
-                this.logger.LogInformation(0, completedTask.Exception, $"{jobName} faulted with message '{completedTask.Exception.Message}'");
-                throw completedTask.Exception;
-            }
-            else
-            {
-                this.logger.LogInformation($"{jobName} has completed");
+                (job as IDisposable)?.Dispose();
             }
         }
 
@@ -195,12 +185,22 @@ namespace OddJob
             }
         }
 
-        /// <inheritdoc />
-        public void Dispose()
+        private void LogTaskCompletation(Task completedTask, object state)
         {
-            foreach (var job in this.jobs)
+            var jobName = state.GetType().Name;
+
+            if (completedTask.IsCanceled)
             {
-                (job as IDisposable)?.Dispose();
+                this.logger.LogInformation($"{jobName} was cancelled");
+            }
+            else if (completedTask.IsFaulted)
+            {
+                this.logger.LogInformation(0, completedTask.Exception, $"{jobName} faulted with message '{completedTask.Exception.Message}'");
+                throw completedTask.Exception;
+            }
+            else
+            {
+                this.logger.LogInformation($"{jobName} has completed");
             }
         }
     }

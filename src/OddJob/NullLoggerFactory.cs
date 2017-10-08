@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace OddJob
 {
+#pragma warning disable SA1600 // Elements should be documented
     internal sealed class NullLoggerFactory : ILoggerFactory
     {
         public void Dispose()
@@ -18,4 +19,5 @@ namespace OddJob
         {
         }
     }
+#pragma warning restore SA1600 // Elements should be documented
 }

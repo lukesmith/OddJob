@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +24,7 @@ namespace OddJob
         /// </summary>
         /// <param name="host">The host whose jobs should be run.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use that will cancel the running jobs.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task RunAsync(this IJobHost host, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.CanBeCanceled)

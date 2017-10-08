@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OddJob.Jobs
@@ -20,18 +20,18 @@ namespace OddJob.Jobs
                     cancellationToken.ThrowIfCancellationRequested();
                 }
 
-                await DoAsync();
+                await this.DoAsync();
             }
         }
 
         /// <summary>
         /// Implements the functionality of the job.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         protected abstract Task DoAsync();
 
         /// <summary>
-        /// Provides a method for the job to be notified 
+        /// Provides a method for the job to be notified
         /// just before the job will be cancelled.
         /// </summary>
         protected virtual void OnCancel()

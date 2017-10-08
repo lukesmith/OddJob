@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -16,7 +16,7 @@ namespace OddJob.Example
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            int i = 0;
+            var i = 0;
 
             var logger = this.loggerFactory.CreateLogger<FailingBackgroundJob>();
             while (true)
