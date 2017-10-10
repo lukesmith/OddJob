@@ -18,8 +18,8 @@ namespace OddJob.Tests
             {
                 var job = new FakeJob(cts, clock);
 
-                var fakeSchedule = new FakeSchedule();
-                var scheduledJob = new ScheduledJob(job, fakeSchedule, NullLoggerFactory.Instance, clock);
+                var fakeSchedule = new FakeSchedule(2);
+                var scheduledJob = new ScheduledJob<FakeJob>(() => job, fakeSchedule, NullLoggerFactory.Instance, clock);
 
                 var timeBefore = clock.UtcNow;
 
@@ -30,14 +30,35 @@ namespace OddJob.Tests
         }
 
         [Fact]
-        public void DisposesWrappedJob()
+        public async Task DisposesWrappedJob()
         {
             var job = new DisposableJob();
-            var scheduledJob = new ScheduledJob(job, new FakeSchedule(), NullLoggerFactory.Instance, Clock.DefaultClock);
+            var scheduledJob = new ScheduledJob<DisposableJob>(() => job, new FakeSchedule(2), NullLoggerFactory.Instance, Clock.DefaultClock);
 
-            scheduledJob.Dispose();
+            using (var cts = new CancellationTokenSource())
+            {
+                await JobHost.RunAsync(scheduledJob, TimeSpan.FromSeconds(3), cts.Token);
+            }
 
-            Assert.Equal(1, job.DisposedCalls);
+            Assert.True(job.DisposedCalls > 0);
+        }
+
+        [Fact]
+        public async Task SwallowsExceptionsInInnerJob()
+        {
+            var clock = Clock.DefaultClock;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                var job = new FakeFailingJob();
+
+                var fakeSchedule = new FakeSchedule(1);
+                var scheduledJob = new ScheduledJob<FakeFailingJob>(() => job, fakeSchedule, NullLoggerFactory.Instance, clock);
+
+                await JobHost.RunAsync(scheduledJob, TimeSpan.FromSeconds(3), cts.Token);
+
+                Assert.True(job.RunCallCount > 1);
+            }
         }
 
         private class DisposableJob : IJob, IDisposable
@@ -78,11 +99,29 @@ namespace OddJob.Tests
             }
         }
 
+        private class FakeFailingJob : IJob
+        {
+            public int RunCallCount { get; private set; }
+
+            public Task RunAsync(CancellationToken cancellationToken)
+            {
+                this.RunCallCount++;
+                throw new Exception("Failure within job");
+            }
+        }
+
         private class FakeSchedule : ISchedule
         {
+            private readonly int secondsDelay;
+
+            public FakeSchedule(int secondsDelay)
+            {
+                this.secondsDelay = secondsDelay;
+            }
+
             public DateTime Next(DateTime @from)
             {
-                return @from.AddSeconds(2);
+                return @from.AddSeconds(this.secondsDelay);
             }
         }
     }

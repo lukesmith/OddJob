@@ -83,16 +83,14 @@ namespace OddJob
         /// Add a callback to create a <see cref="IJob"/> that will be managed by
         /// a <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
         /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IJob"/> to add.</typeparam>
         /// <param name="factory">A function that creates an <see cref="IJob"/>.</param>
         /// <param name="schedule">The <see cref="ISchedule"/> on which the <paramref name="factory"/> <see cref="IJob"/> will run.</param>
         /// <returns>A <see cref="JobHostBuilder"/>.</returns>
-        public JobHostBuilder Add(Func<IJob> factory, ISchedule schedule)
+        public JobHostBuilder Add<T>(Func<T> factory, ISchedule schedule)
+            where T : IJob
         {
-            this.processes.Add(() =>
-            {
-                var job = factory();
-                return new Jobs.ScheduledJob(job, schedule, this.loggerFactory, Clock.DefaultClock);
-            });
+            this.processes.Add(() => new Jobs.ScheduledJob<T>(factory, schedule, this.loggerFactory, Clock.DefaultClock));
 
             return this;
         }
