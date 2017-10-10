@@ -1,5 +1,7 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using OddJob.Schedules;
 
 namespace OddJob.Example
 {
@@ -15,6 +17,7 @@ namespace OddJob.Example
                 loggerFactory.AddConsole();
 
                 var builder = new JobHostBuilder()
+                    .Add(() => new OneTimeJob(loggerFactory), new EveryTenSeconds())
                     .Add(() => new OneTimeJob(loggerFactory))
                     .Add(() => new FailingBackgroundJob(loggerFactory))
                     .Add(() => new BackgroundJob(loggerFactory))
@@ -22,6 +25,15 @@ namespace OddJob.Example
                     .UseLoggerFactory(loggerFactory);
 
                 return builder.BuildAndRun();
+            }
+        }
+
+        private class EveryTenSeconds : ISchedule
+        {
+            public DateTime Next(DateTime from)
+            {
+                var a = from.Second % 10;
+                return from.AddSeconds(10 - a);
             }
         }
     }

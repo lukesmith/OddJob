@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using OddJob.Schedules;
 
 namespace OddJob
 {
@@ -12,7 +13,7 @@ namespace OddJob
     {
         private readonly IList<Func<IJob>> processes = new List<Func<IJob>>();
 
-        private ILoggerFactory loggerFactory;
+        private ILoggerFactory loggerFactory = NullLoggerFactory.Instance;
 
         /// <summary>
         /// Creates an instance of <typeparamref name="T"/> that will be managed
@@ -24,6 +25,20 @@ namespace OddJob
             where T : IJob, new()
         {
             this.Add(() => new T());
+            return this;
+        }
+
+        /// <summary>
+        /// Creates an instance of <typeparamref name="T"/> that will be managed
+        /// by the <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/> and run on a <paramref name="schedule"/>.
+        /// </summary>
+        /// <typeparam name="T">An <see cref="IJob"/> to add to the built <see cref="JobHost"/>.</typeparam>
+        /// <param name="schedule">The <see cref="ISchedule"/> on which the <typeparamref name="T"/> will run.</param>
+        /// <returns>A <see cref="JobHostBuilder"/>.</returns>
+        public JobHostBuilder Add<T>(ISchedule schedule)
+            where T : IJob, new()
+        {
+            this.Add(() => new T(), schedule);
             return this;
         }
 
@@ -40,6 +55,19 @@ namespace OddJob
         }
 
         /// <summary>
+        /// Add a <see cref="IJob"/> instance that will be managed by
+        /// a <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
+        /// </summary>
+        /// <param name="job">A <see cref="IJob"/>.</param>
+        /// <param name="schedule">The <see cref="ISchedule"/> on which the <paramref name="job"/> will run.</param>
+        /// <returns>A <see cref="JobHostBuilder"/>.</returns>
+        public JobHostBuilder Add(IJob job, ISchedule schedule)
+        {
+            this.Add(() => job, schedule);
+            return this;
+        }
+
+        /// <summary>
         /// Add a callback to create a <see cref="IJob"/> that will be managed by
         /// a <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
         /// </summary>
@@ -48,6 +76,24 @@ namespace OddJob
         public JobHostBuilder Add(Func<IJob> factory)
         {
             this.processes.Add(factory);
+            return this;
+        }
+
+        /// <summary>
+        /// Add a callback to create a <see cref="IJob"/> that will be managed by
+        /// a <see cref="IJobHost"/> built by <see cref="JobHostBuilder"/>.
+        /// </summary>
+        /// <param name="factory">A function that creates an <see cref="IJob"/>.</param>
+        /// <param name="schedule">The <see cref="ISchedule"/> on which the <paramref name="factory"/> <see cref="IJob"/> will run.</param>
+        /// <returns>A <see cref="JobHostBuilder"/>.</returns>
+        public JobHostBuilder Add(Func<IJob> factory, ISchedule schedule)
+        {
+            this.processes.Add(() =>
+            {
+                var job = factory();
+                return new Jobs.ScheduledJob(job, schedule, this.loggerFactory, Clock.DefaultClock);
+            });
+
             return this;
         }
 
@@ -68,7 +114,7 @@ namespace OddJob
         /// <returns>A <see cref="JobHostBuilder"/>.</returns>
         public IJobHost Build()
         {
-            return new JobHost(this.processes.Select(x => x()).ToArray(), this.loggerFactory ?? new NullLoggerFactory());
+            return new JobHost(this.processes.Select(x => x()).ToArray(), this.loggerFactory);
         }
     }
 }
