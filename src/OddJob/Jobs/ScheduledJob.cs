@@ -10,7 +10,8 @@ namespace OddJob.Jobs
     /// Represents a <see cref="IJob"/> that runs on a schedule, or
     /// until the host process ends.
     /// </summary>
-    internal class ScheduledJob : IJob, IDisposable
+    internal class ScheduledJob : IJob, INamed, IDisposable
+    [Name(nameof(ScheduledJob))]
     {
         private readonly IJob job;
         private readonly ILogger logger;
@@ -27,15 +28,15 @@ namespace OddJob.Jobs
         public ScheduledJob(IJob job, ISchedule schedule, ILoggerFactory loggerFactory, IClock clock)
         {
             this.job = job;
-            this.logger = loggerFactory.CreateLogger<ScheduledJob>();
             this.schedule = schedule;
+            this.loggerFactory = loggerFactory;
             this.clock = clock;
         }
 
         /// <inheritdoc />
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            var jobType = this.job.GetType().Name;
+            var jobName = this.job.GetName();
 
             while (true)
             {
@@ -51,15 +52,16 @@ namespace OddJob.Jobs
                 {
                     var delay = next - now;
 
-                    this.logger.LogInformation("Waiting for {0} until {1}", delay, next);
+                    var logger = this.loggerFactory.CreateLogger($"{this.GetName()}:{jobName}");
+                    logger.LogInformation("Waiting for {0} until {1}", delay, next);
 
                     await Task.Delay(delay, cancellationToken);
 
-                    this.logger.LogInformation("Starting job {0}", jobType);
+                    logger.LogInformation("Starting job {0}", jobName);
 
                     this.job.RunAsync(cancellationToken).Wait(cancellationToken);
 
-                    this.logger.LogInformation("Worker job {0} completed", jobType);
+                    this.logger.LogInformation("Worker job {0} completed", jobName);
                 }
             }
         }

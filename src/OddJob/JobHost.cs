@@ -145,7 +145,7 @@ namespace OddJob
             try
             {
                 Task.WaitAll(this.jobs.Select(job => RunJobAsync(job, cts)
-                    .ContinueWith(this.LogTaskCompletation, job)).ToArray());
+                    .ContinueWith((task, state) => this.LogTaskCompletation(task, state as IJob), job)).ToArray());
 
                 await Task.CompletedTask;
             }
@@ -185,9 +185,9 @@ namespace OddJob
             }
         }
 
-        private void LogTaskCompletation(Task completedTask, object state)
+        private void LogTaskCompletation(Task completedTask, IJob job)
         {
-            var jobName = state.GetType().Name;
+            var jobName = job.GetName();
 
             if (completedTask.IsCanceled)
             {

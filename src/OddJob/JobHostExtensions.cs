@@ -66,7 +66,7 @@ namespace OddJob
             {
                 foreach (var job in host.Jobs)
                 {
-                    Console.WriteLine($"Running job - {job.GetType().Name}");
+                    Console.WriteLine($"Running job - {job.GetName()}");
                 }
 
                 await host.StartAsync(cts);
