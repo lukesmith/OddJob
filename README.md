@@ -70,7 +70,7 @@ public class MyJob : IJob
 
     public async Task RunAsync(CancellationToken cancellationToken)
     {
-        var logger = this.loggerFactory.CreateLogger<OneTimeJob>();
+        var logger = this.loggerFactory.CreateLogger<MyJob>();
 
         logger.LogInformation("tick");
 
