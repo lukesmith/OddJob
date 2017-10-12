@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - OddJob.Example updated to dotnetcore 2
 - OddJob.Tests updated to dotnetcore 2 and xunit 2.3
 
+### Added
+- Running jobs on a schedule
+
 ## [0.1.1](#0.1.1) - 2017-08-16
 
 ### Added

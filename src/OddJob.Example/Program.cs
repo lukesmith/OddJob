@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using OddJob.Schedules;
 
 namespace OddJob.Example
 {
@@ -15,8 +16,12 @@ namespace OddJob.Example
                 loggerFactory.AddConsole();
 
                 var builder = new JobHostBuilder()
+                    .Add(() => new FailingBackgroundJob(loggerFactory), Schedule.Every().Second())
+                    .Add(() => new OneTimeJob(loggerFactory), Schedule.Every().Second())
+                    .Add(() => new OneTimeJob(loggerFactory), Schedule.Every().Minute())
+                    .Add(() => new OneTimeJob(loggerFactory), Schedule.Every().Hour())
+                    .Add(() => new OneTimeJob(loggerFactory), Schedule.Every().Day().At(12, 3, 1))
                     .Add(() => new OneTimeJob(loggerFactory))
-                    .Add(() => new FailingBackgroundJob(loggerFactory))
                     .Add(() => new BackgroundJob(loggerFactory))
                     .Add(() => new WebServer(configuration, loggerFactory))
                     .UseLoggerFactory(loggerFactory);

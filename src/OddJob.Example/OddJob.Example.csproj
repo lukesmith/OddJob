@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="GlobalSuppressions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AdditionalFiles Include="$(SolutionDir)\.stylecop\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
